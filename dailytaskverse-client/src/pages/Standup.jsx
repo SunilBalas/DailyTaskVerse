@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { MdContentCopy, MdCheckCircle, MdArrowForward, MdRefresh, MdWarning, MdSettings, MdSave } from 'react-icons/md';
 import { dashboardApi } from '../services/api';
+import CustomTimePicker from '../components/common/CustomTimePicker';
 import toast from 'react-hot-toast';
 import './Standup.css';
 
@@ -129,11 +130,10 @@ export default function Standup() {
               <div className="ds-popover">
                 <label className="ds-popover-label">DS Time (24h)</label>
                 <div className="ds-popover-row">
-                  <input
-                    type="time"
-                    className="ds-time-input"
+                  <CustomTimePicker
                     value={configTime}
-                    onChange={(e) => setConfigTime(e.target.value)}
+                    onChange={(val) => setConfigTime(val)}
+                    placeholder="Set time"
                   />
                   <button className="btn-save-config" onClick={saveConfig}>
                     <MdSave /> Save

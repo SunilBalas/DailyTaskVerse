@@ -1,23 +1,31 @@
 const IST_TZ = 'Asia/Kolkata';
 
+// Ensure date strings without timezone info are treated as UTC
+const asUtc = (dateStr) => {
+  if (typeof dateStr === 'string' && !dateStr.endsWith('Z') && !dateStr.includes('+') && !dateStr.includes('-', 19)) {
+    return dateStr + 'Z';
+  }
+  return dateStr;
+};
+
 export const formatDateIST = (dateStr, options = {}) => {
-  return new Date(dateStr).toLocaleString('en-IN', { timeZone: IST_TZ, ...options });
+  return new Date(asUtc(dateStr)).toLocaleString('en-IN', { timeZone: IST_TZ, ...options });
 };
 
 export const formatDateShortIST = (dateStr) => {
-  return new Date(dateStr).toLocaleDateString('en-IN', {
+  return new Date(asUtc(dateStr)).toLocaleDateString('en-IN', {
     timeZone: IST_TZ, month: 'short', day: 'numeric'
   });
 };
 
 export const formatDateFullIST = (dateStr) => {
-  return new Date(dateStr).toLocaleDateString('en-IN', {
+  return new Date(asUtc(dateStr)).toLocaleDateString('en-IN', {
     timeZone: IST_TZ, weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
   });
 };
 
 export const formatDateTimeIST = (dateStr) => {
-  return new Date(dateStr).toLocaleString('en-IN', {
+  return new Date(asUtc(dateStr)).toLocaleString('en-IN', {
     timeZone: IST_TZ, month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
   });
 };

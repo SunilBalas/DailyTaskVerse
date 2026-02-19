@@ -231,6 +231,8 @@ DailyTaskVerse/
                 ├── Modal.jsx / Modal.css
                 ├── ConfirmDialog.jsx / ConfirmDialog.css
                 ├── CustomSelect.jsx / CustomSelect.css
+                ├── CustomDatePicker.jsx / CustomDatePicker.css
+                ├── CustomTimePicker.jsx / CustomTimePicker.css
                 ├── NotificationBell.jsx / NotificationBell.css
                 └── ThemePicker.jsx / ThemePicker.css
 ```
@@ -698,15 +700,16 @@ IST (India Standard Time) timezone-aware date formatting helpers used across Das
 
 #### Tasks Page (`pages/Tasks.jsx`)
 
-- **Filter bar** — Dropdown filters for Status, Priority, and Category
+- **Filter bar** — CustomSelect dropdown filters for Status (colored dots), Priority (colored dots), and Category (icons)
 - **Task list** — Cards showing title, description, priority badge, status badge, category badge, recurring badge, reminder badge, due date
 - **Action buttons** — Complete (checkmark), Edit (pencil), Delete (trash)
 - **Export button** — Downloads filtered tasks as .xlsx file
 - **Modal form** — Create/Edit tasks with:
-  - Title, Description, Priority, Status (edit only), Category
-  - Due Date
-  - Recurring toggle (Daily / Weekly / Monthly patterns)
-  - Reminder dropdown (No Reminder, 1h/1d/3d before due, Custom datetime)
+  - Title, Description, Priority (CustomSelect with colored dots), Status (edit only, CustomSelect with colored dots), Category (CustomSelect with icons)
+  - Due Date (CustomDatePicker calendar)
+  - Recurring toggle (Daily / Weekly / Monthly patterns via CustomSelect)
+  - Reminder dropdown (No Reminder, 1h/1d/3d before due, Custom date/time)
+  - Custom reminder uses separate CustomDatePicker + CustomTimePicker side by side
 - **Pagination** — 10 tasks per page with Previous/Next controls
 - **Recurring tasks** — Completing a recurring task auto-creates the next occurrence
 
@@ -715,7 +718,7 @@ IST (India Standard Time) timezone-aware date formatting helpers used across Das
 - **Log cards** — Date badge (day/date/month) + content area + hours spent
 - **Date badge** — Gradient background showing formatted date
 - **Export button** — Downloads all logs as .xlsx
-- **Modal form** — Log Date (date picker) + Content (textarea) + Hours Spent (number) + From Time / To Time (time pickers)
+- **Modal form** — Log Date (CustomDatePicker) + Content (textarea) + Hours Spent (number) + From Time / To Time (CustomTimePicker)
 - **Pagination** — 10 logs per page
 - **Edit/Delete actions** — Per log entry
 
@@ -725,7 +728,7 @@ IST (India Standard Time) timezone-aware date formatting helpers used across Das
   - **Yesterday** — Completed tasks from the previous day, daily log content, hours worked
   - **Today** — Pending/In-Progress tasks, today's daily log content, committed hours
   - **Blockers** — Overdue tasks flagged as potential blockers
-- Configurable standup time with reporting windows (previous day/today)
+- Configurable standup time via CustomTimePicker in settings popover
 - Fetches data from `/dashboard/{userId}/standup` endpoint
 
 #### Timesheet Page (`pages/Timesheet.jsx`)
@@ -797,13 +800,46 @@ Reusable deletion confirmation dialog:
 
 #### CustomSelect (`components/common/CustomSelect.jsx`)
 
-Enhanced dropdown select component:
+Enhanced dropdown select component (portal-based):
 - Full keyboard navigation (arrow keys, enter, escape)
 - Type-ahead search (type first letter to jump to matching option)
 - Mouse hover support with scroll-into-view
 - Checkmark indicator for selected option
+- Colored dot indicators and icon support per option
+- Portal-based dropdown (`createPortal`) to avoid modal overflow clipping
+- `position: fixed` with viewport-relative positioning from `getBoundingClientRect()`
+- Auto-repositions on scroll/resize, opens above when insufficient space below
 - ARIA attributes for accessibility
-- Used in Tasks page for filter dropdowns and form selects
+- Used in Tasks page for filter dropdowns and form selects (status, priority, category)
+
+#### CustomDatePicker (`components/common/CustomDatePicker.jsx`)
+
+Custom calendar date picker component (portal-based):
+- Full calendar UI with month/year navigation (chevron buttons)
+- 7×6 day grid with Sunday–Saturday column headers
+- Day states: today (accent background), selected (cosmic gradient), other-month (dimmed)
+- "Today" quick-select button and "Clear" button in footer
+- Accepts/outputs `YYYY-MM-DD` format strings
+- Displays formatted date like "Feb 19, 2026" in trigger button
+- Syncs view month/year to selected date when opening
+- Portal-based dropdown with auto-positioning (opens above/below based on viewport space)
+- Click-outside-to-close, Escape key support
+- Repositions on scroll/resize while open
+- Used in Tasks (due date, custom reminder date) and DailyLog (log date) pages
+
+#### CustomTimePicker (`components/common/CustomTimePicker.jsx`)
+
+Custom three-column time picker component (portal-based):
+- Three scrollable columns: Hours (12, 1–11), Minutes (00–55 in 5-min steps), AM/PM
+- Current time display at top of dropdown (large, bold, cosmic-primary color)
+- Accepts/outputs 24-hour format (`HH:mm`) for API compatibility
+- Displays 12-hour format with AM/PM for user-friendliness
+- Helper functions: `parse24()` (24h → 12h), `to24()` (12h → 24h), `formatDisplay()`
+- Auto-scrolls selected items into view when dropdown opens
+- Selected items use cosmic gradient background with box-shadow
+- Portal-based dropdown with auto-positioning
+- Click-outside-to-close, Escape key support
+- Used in Tasks (custom reminder time), DailyLog (from/to time), and Standup (DS time config)
 
 #### NotificationBell (`components/common/NotificationBell.jsx`)
 
