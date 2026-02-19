@@ -1,0 +1,22 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Semantic Versioning: Major.Minor.Patch -->
+    <!-- Major: breaking changes -->
+    <!-- Minor: new features (backward-compatible) -->
+    <!-- Patch: bug fixes, hotfixes -->
+    <Version>1.0.0</Version>
+
+    <!-- Product metadata -->
+    <Product>DailyTaskVerse</Product>
+    <Authors>Sunil Balas | Jay Chaudhari</Authors>
+    <Description>Internal office productivity tool for task management, daily work logs, and standup reports</Description>
+    <Copyright>Copyright © $([System.DateTime]::Now.Year) Sunil Balas | Jay Chaudhari</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Ensure .NET 9 SDK is used for builds -->
+    <MSBuildSDKsPath Condition="Exists('C:\Program Files\dotnet\sdk\9.0.311\Sdks')">C:\Program Files\dotnet\sdk\9.0.311\Sdks</MSBuildSDKsPath>
+  </PropertyGroup>
+
+</Project>

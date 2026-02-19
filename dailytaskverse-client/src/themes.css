@@ -1,0 +1,352 @@
+/* ============================================================
+   THEME TRANSITION
+   Only active during theme switches, not on page load.
+   ============================================================ */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background-color 0.35s ease,
+              color 0.35s ease,
+              border-color 0.35s ease,
+              box-shadow 0.35s ease,
+              background 0.35s ease !important;
+}
+
+/* ============================================================
+   COSMIC LIGHT (default) — no overrides needed, :root applies
+   ============================================================ */
+
+/* ============================================================
+   COSMIC DARK
+   Deep navy/purple surfaces, brighter purple accents
+   ============================================================ */
+[data-theme="cosmic-dark"] {
+  --cosmic-deepest: #050816;
+  --cosmic-deep: #0a0e2a;
+  --cosmic-dark: #10143d;
+  --cosmic-mid: #1a1f5c;
+  --cosmic-primary: #6d5cff;
+  --cosmic-accent: #9580ff;
+  --cosmic-light: #b8a9ff;
+  --cosmic-glow: #d4c8ff;
+  --cosmic-nebula: #a78bfa;
+  --cosmic-star: #c7d2fe;
+
+  --purple-deep: #7c3aed;
+  --purple-mid: #8b5cf6;
+  --purple-light: #a78bfa;
+  --purple-glow: rgba(167, 139, 250, 0.15);
+
+  --surface-bg: #0c0f24;
+  --surface-card: #151833;
+  --surface-hover: #1c2045;
+  --surface-muted: #12152e;
+  --surface-border: #252a4a;
+
+  --text-primary: #e8e6f0;
+  --text-secondary: #b0adc4;
+  --text-muted: #7a7896;
+  --text-on-dark: #e8e6f0;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.5);
+
+  --status-success: #34d399;
+  --status-success-bg: rgba(52, 211, 153, 0.12);
+  --status-warning: #fbbf24;
+  --status-warning-bg: rgba(251, 191, 36, 0.12);
+  --status-info: #60a5fa;
+  --status-info-bg: rgba(96, 165, 250, 0.12);
+  --status-error: #f87171;
+  --status-error-bg: rgba(248, 113, 113, 0.12);
+
+  --accent-bg-subtle: rgba(109, 92, 255, 0.1);
+  --accent-bg-medium: rgba(109, 92, 255, 0.3);
+  --accent-shadow-sm: rgba(109, 92, 255, 0.12);
+  --accent-shadow-md: rgba(109, 92, 255, 0.35);
+  --accent-focus-ring: rgba(109, 92, 255, 0.15);
+  --accent-border-hover: rgba(109, 92, 255, 0.2);
+  --accent-orb-1: rgba(167, 139, 250, 0.15);
+  --accent-orb-2: rgba(109, 92, 255, 0.12);
+  --accent-admin-badge: linear-gradient(135deg, rgba(139, 92, 246, 0.18), rgba(109, 92, 255, 0.12));
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 20px rgba(109, 92, 255, 0.25);
+
+  --gradient-cosmic: linear-gradient(135deg, #080b1f 0%, #12163a 40%, #1e2260 100%);
+  --gradient-cosmic-accent: linear-gradient(135deg, #6d5cff, #8b5cf6);
+  --gradient-cosmic-deep: linear-gradient(180deg, #050816 0%, #0a0e2a 30%, #141845 100%);
+  --gradient-cosmic-btn: linear-gradient(135deg, #6d5cff 0%, #7c3aed 50%, #8b5cf6 100%);
+  --gradient-cosmic-hover: linear-gradient(135deg, #5b4cd6 0%, #6d28d9 50%, #7c3aed 100%);
+  --gradient-nebula: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(109, 92, 255, 0.06));
+
+  color-scheme: dark;
+}
+
+/* ============================================================
+   OCEAN
+   Light blue surfaces, deep blue/teal accents
+   ============================================================ */
+[data-theme="ocean"] {
+  --cosmic-deepest: #031525;
+  --cosmic-deep: #082240;
+  --cosmic-dark: #0c3155;
+  --cosmic-mid: #0e4b78;
+  --cosmic-primary: #0891b2;
+  --cosmic-accent: #22d3ee;
+  --cosmic-light: #67e8f9;
+  --cosmic-glow: #a5f3fc;
+  --cosmic-nebula: #06b6d4;
+  --cosmic-star: #e0f7fa;
+
+  --purple-deep: #0e7490;
+  --purple-mid: #0891b2;
+  --purple-light: #22d3ee;
+  --purple-glow: #cffafe;
+
+  --surface-bg: #eff8fa;
+  --surface-card: #ffffff;
+  --surface-hover: #f0fafb;
+  --surface-muted: #f3fbfc;
+  --surface-border: #d1ecf0;
+
+  --text-primary: #0c2d3e;
+  --text-secondary: #3b6b80;
+  --text-muted: #7ba3b5;
+  --text-on-dark: #e0f7fa;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.55);
+
+  --status-success: #059669;
+  --status-success-bg: #ecfdf5;
+  --status-warning: #d97706;
+  --status-warning-bg: #fffbeb;
+  --status-info: #0891b2;
+  --status-info-bg: #ecfeff;
+  --status-error: #dc2626;
+  --status-error-bg: #fef2f2;
+
+  --accent-bg-subtle: rgba(8, 145, 178, 0.08);
+  --accent-bg-medium: rgba(8, 145, 178, 0.25);
+  --accent-shadow-sm: rgba(8, 145, 178, 0.1);
+  --accent-shadow-md: rgba(8, 145, 178, 0.3);
+  --accent-focus-ring: rgba(8, 145, 178, 0.1);
+  --accent-border-hover: rgba(8, 145, 178, 0.15);
+  --accent-orb-1: rgba(6, 182, 212, 0.15);
+  --accent-orb-2: rgba(8, 145, 178, 0.12);
+  --accent-admin-badge: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(8, 145, 178, 0.08));
+
+  --shadow-sm: 0 1px 3px rgba(8, 145, 178, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 16px rgba(8, 145, 178, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 8px 30px rgba(8, 145, 178, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 50px rgba(8, 145, 178, 0.12), 0 8px 20px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 20px rgba(8, 145, 178, 0.15);
+
+  --gradient-cosmic: linear-gradient(135deg, #082240 0%, #0c3155 40%, #155e75 100%);
+  --gradient-cosmic-accent: linear-gradient(135deg, #0891b2, #06b6d4);
+  --gradient-cosmic-deep: linear-gradient(180deg, #031525 0%, #082240 30%, #0e4b78 100%);
+  --gradient-cosmic-btn: linear-gradient(135deg, #0891b2 0%, #0e7490 50%, #06b6d4 100%);
+  --gradient-cosmic-hover: linear-gradient(135deg, #0e7490 0%, #155e75 50%, #0891b2 100%);
+  --gradient-nebula: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.05));
+}
+
+/* ============================================================
+   SUNSET
+   Cream/warm surfaces, orange/amber accents
+   ============================================================ */
+[data-theme="sunset"] {
+  --cosmic-deepest: #1c0e05;
+  --cosmic-deep: #3b1a08;
+  --cosmic-dark: #5c2a0e;
+  --cosmic-mid: #7c3a14;
+  --cosmic-primary: #ea580c;
+  --cosmic-accent: #fb923c;
+  --cosmic-light: #fdba74;
+  --cosmic-glow: #fed7aa;
+  --cosmic-nebula: #f97316;
+  --cosmic-star: #fff7ed;
+
+  --purple-deep: #c2410c;
+  --purple-mid: #ea580c;
+  --purple-light: #fb923c;
+  --purple-glow: #ffedd5;
+
+  --surface-bg: #fdf6f0;
+  --surface-card: #ffffff;
+  --surface-hover: #fef9f4;
+  --surface-muted: #fef5ee;
+  --surface-border: #f0dfd0;
+
+  --text-primary: #2e1a0e;
+  --text-secondary: #6b4a30;
+  --text-muted: #a88a6e;
+  --text-on-dark: #fff1e0;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.55);
+
+  --status-success: #059669;
+  --status-success-bg: #ecfdf5;
+  --status-warning: #d97706;
+  --status-warning-bg: #fffbeb;
+  --status-info: #ea580c;
+  --status-info-bg: #fff7ed;
+  --status-error: #dc2626;
+  --status-error-bg: #fef2f2;
+
+  --accent-bg-subtle: rgba(234, 88, 12, 0.08);
+  --accent-bg-medium: rgba(234, 88, 12, 0.25);
+  --accent-shadow-sm: rgba(234, 88, 12, 0.1);
+  --accent-shadow-md: rgba(234, 88, 12, 0.3);
+  --accent-focus-ring: rgba(234, 88, 12, 0.1);
+  --accent-border-hover: rgba(234, 88, 12, 0.15);
+  --accent-orb-1: rgba(249, 115, 22, 0.15);
+  --accent-orb-2: rgba(234, 88, 12, 0.12);
+  --accent-admin-badge: linear-gradient(135deg, rgba(249, 115, 22, 0.12), rgba(234, 88, 12, 0.08));
+
+  --shadow-sm: 0 1px 3px rgba(234, 88, 12, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 16px rgba(234, 88, 12, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 8px 30px rgba(234, 88, 12, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 50px rgba(234, 88, 12, 0.12), 0 8px 20px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 20px rgba(234, 88, 12, 0.15);
+
+  --gradient-cosmic: linear-gradient(135deg, #3b1a08 0%, #5c2a0e 40%, #7c3a14 100%);
+  --gradient-cosmic-accent: linear-gradient(135deg, #ea580c, #f97316);
+  --gradient-cosmic-deep: linear-gradient(180deg, #1c0e05 0%, #3b1a08 30%, #5c2a0e 100%);
+  --gradient-cosmic-btn: linear-gradient(135deg, #ea580c 0%, #c2410c 50%, #f97316 100%);
+  --gradient-cosmic-hover: linear-gradient(135deg, #c2410c 0%, #9a3412 50%, #ea580c 100%);
+  --gradient-nebula: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(234, 88, 12, 0.05));
+}
+
+/* ============================================================
+   FOREST
+   Light sage surfaces, emerald/green accents
+   ============================================================ */
+[data-theme="forest"] {
+  --cosmic-deepest: #052e16;
+  --cosmic-deep: #064e27;
+  --cosmic-dark: #0a6b35;
+  --cosmic-mid: #0f8a46;
+  --cosmic-primary: #059669;
+  --cosmic-accent: #34d399;
+  --cosmic-light: #6ee7b7;
+  --cosmic-glow: #a7f3d0;
+  --cosmic-nebula: #10b981;
+  --cosmic-star: #ecfdf5;
+
+  --purple-deep: #047857;
+  --purple-mid: #059669;
+  --purple-light: #34d399;
+  --purple-glow: #d1fae5;
+
+  --surface-bg: #f0faf4;
+  --surface-card: #ffffff;
+  --surface-hover: #f4fbf7;
+  --surface-muted: #f2fbf6;
+  --surface-border: #c8e6d4;
+
+  --text-primary: #14352a;
+  --text-secondary: #3a6b56;
+  --text-muted: #76a590;
+  --text-on-dark: #d1fae5;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.55);
+
+  --status-success: #059669;
+  --status-success-bg: #ecfdf5;
+  --status-warning: #d97706;
+  --status-warning-bg: #fffbeb;
+  --status-info: #059669;
+  --status-info-bg: #ecfdf5;
+  --status-error: #dc2626;
+  --status-error-bg: #fef2f2;
+
+  --accent-bg-subtle: rgba(5, 150, 105, 0.08);
+  --accent-bg-medium: rgba(5, 150, 105, 0.25);
+  --accent-shadow-sm: rgba(5, 150, 105, 0.1);
+  --accent-shadow-md: rgba(5, 150, 105, 0.3);
+  --accent-focus-ring: rgba(5, 150, 105, 0.1);
+  --accent-border-hover: rgba(5, 150, 105, 0.15);
+  --accent-orb-1: rgba(16, 185, 129, 0.15);
+  --accent-orb-2: rgba(5, 150, 105, 0.12);
+  --accent-admin-badge: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.08));
+
+  --shadow-sm: 0 1px 3px rgba(5, 150, 105, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 16px rgba(5, 150, 105, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 8px 30px rgba(5, 150, 105, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 50px rgba(5, 150, 105, 0.12), 0 8px 20px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 20px rgba(5, 150, 105, 0.15);
+
+  --gradient-cosmic: linear-gradient(135deg, #064e27 0%, #0a6b35 40%, #0f8a46 100%);
+  --gradient-cosmic-accent: linear-gradient(135deg, #059669, #10b981);
+  --gradient-cosmic-deep: linear-gradient(180deg, #052e16 0%, #064e27 30%, #0a6b35 100%);
+  --gradient-cosmic-btn: linear-gradient(135deg, #059669 0%, #047857 50%, #10b981 100%);
+  --gradient-cosmic-hover: linear-gradient(135deg, #047857 0%, #065f46 50%, #059669 100%);
+  --gradient-nebula: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+}
+
+/* ============================================================
+   MIDNIGHT
+   Ultra-dark, near-black surfaces, cool subtle accents
+   ============================================================ */
+[data-theme="midnight"] {
+  --cosmic-deepest: #020206;
+  --cosmic-deep: #08080f;
+  --cosmic-dark: #0f0f1a;
+  --cosmic-mid: #1a1a2e;
+  --cosmic-primary: #6366f1;
+  --cosmic-accent: #818cf8;
+  --cosmic-light: #a5b4fc;
+  --cosmic-glow: #c7d2fe;
+  --cosmic-nebula: #7c7dfa;
+  --cosmic-star: #e0e7ff;
+
+  --purple-deep: #4f46e5;
+  --purple-mid: #6366f1;
+  --purple-light: #818cf8;
+  --purple-glow: rgba(129, 140, 248, 0.12);
+
+  --surface-bg: #060609;
+  --surface-card: #0e0e16;
+  --surface-hover: #16161f;
+  --surface-muted: #0b0b12;
+  --surface-border: #1e1e2e;
+
+  --text-primary: #d4d4e8;
+  --text-secondary: #9898b8;
+  --text-muted: #686888;
+  --text-on-dark: #d4d4e8;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.45);
+
+  --status-success: #34d399;
+  --status-success-bg: rgba(52, 211, 153, 0.1);
+  --status-warning: #fbbf24;
+  --status-warning-bg: rgba(251, 191, 36, 0.1);
+  --status-info: #818cf8;
+  --status-info-bg: rgba(129, 140, 248, 0.1);
+  --status-error: #f87171;
+  --status-error-bg: rgba(248, 113, 113, 0.1);
+
+  --accent-bg-subtle: rgba(99, 102, 241, 0.1);
+  --accent-bg-medium: rgba(99, 102, 241, 0.3);
+  --accent-shadow-sm: rgba(99, 102, 241, 0.12);
+  --accent-shadow-md: rgba(99, 102, 241, 0.35);
+  --accent-focus-ring: rgba(99, 102, 241, 0.15);
+  --accent-border-hover: rgba(99, 102, 241, 0.2);
+  --accent-orb-1: rgba(124, 125, 250, 0.15);
+  --accent-orb-2: rgba(99, 102, 241, 0.12);
+  --accent-admin-badge: linear-gradient(135deg, rgba(124, 125, 250, 0.15), rgba(99, 102, 241, 0.1));
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.5), 0 8px 20px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.2);
+
+  --gradient-cosmic: linear-gradient(135deg, #08080f 0%, #0f0f1a 40%, #1a1a2e 100%);
+  --gradient-cosmic-accent: linear-gradient(135deg, #6366f1, #7c7dfa);
+  --gradient-cosmic-deep: linear-gradient(180deg, #020206 0%, #08080f 30%, #0f0f1a 100%);
+  --gradient-cosmic-btn: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #7c7dfa 100%);
+  --gradient-cosmic-hover: linear-gradient(135deg, #4f46e5 0%, #4338ca 50%, #6366f1 100%);
+  --gradient-nebula: linear-gradient(135deg, rgba(124, 125, 250, 0.08), rgba(99, 102, 241, 0.04));
+
+  color-scheme: dark;
+}

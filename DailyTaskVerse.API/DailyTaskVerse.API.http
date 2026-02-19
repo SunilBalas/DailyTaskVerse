@@ -1,0 +1,6 @@
+@DailyTaskVerse.API_HostAddress = http://localhost:5246
+
+GET {{DailyTaskVerse.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
