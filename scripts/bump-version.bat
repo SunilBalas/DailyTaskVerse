@@ -181,7 +181,7 @@ set NEW=!MAJOR!.!MINOR!.!PATCH!
 echo Bumping version: %CURRENT% -^> !NEW!
 
 :: Replace version in Directory.Build.props using PowerShell for reliability
-powershell -NoProfile -Command "(Get-Content '%PROPS_FILE%') -replace '<Version>%CURRENT%</Version>', '<Version>!NEW!</Version>' | Set-Content '%PROPS_FILE%'"
+powershell -NoProfile -Command "$f='%PROPS_FILE%'; $c=(Get-Content $f) -replace '<Version>%CURRENT%</Version>','<Version>!NEW!</Version>'; Set-Content $f $c"
 
 if %errorlevel% neq 0 (
     echo ERROR: Failed to update Directory.Build.props version.
@@ -192,7 +192,7 @@ echo   Updated Directory.Build.props
 
 :: Also update package.json version for the client app
 if exist "%PKG_FILE%" (
-    powershell -NoProfile -Command "(Get-Content '%PKG_FILE%') -replace '\"version\": \"[^\"]*\"', '\"version\": \"!NEW!\"' | Set-Content '%PKG_FILE%'"
+    powershell -NoProfile -Command "$f='%PKG_FILE%'; $c=[IO.File]::ReadAllText($f); $c=$c -replace '\x22version\x22:\s*\x22[^^\x22]*\x22', ([char]34+'version'+[char]34+': '+[char]34+'!NEW!'+[char]34); [IO.File]::WriteAllText($f, $c)"
     if %errorlevel% neq 0 (
         echo WARNING: Failed to update package.json version.
     ) else (
