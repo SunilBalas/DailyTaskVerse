@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { MdAdd, MdEdit, MdDelete, MdCheckCircle, MdFilterList, MdRepeat, MdFileDownload, MdNotificationsActive } from 'react-icons/md';
+import { MdAdd, MdEdit, MdDelete, MdCheckCircle, MdFilterList, MdRepeat, MdFileDownload, MdNotificationsActive, MdClose, MdFlag, MdCategory, MdSchedule, MdNotifications, MdCalendarToday, MdAccessTime } from 'react-icons/md';
 import { taskApi, exportApi } from '../services/api';
 import { formatDateShortIST, todayIST } from '../utils/dateUtils';
 import Modal from '../components/common/Modal';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import CustomSelect from '../components/common/CustomSelect';
+import CustomDatePicker from '../components/common/CustomDatePicker';
+import CustomTimePicker from '../components/common/CustomTimePicker';
 import toast from 'react-hot-toast';
 import './Tasks.css';
 
@@ -15,9 +17,36 @@ export default function Tasks() {
   const [filter, setFilter] = useState({ status: '', priority: '', category: '' });
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [form, setForm] = useState({ title: '', description: '', priority: 'Medium', status: 'Pending', category: '', isRecurring: false, recurrencePattern: '', dueDate: todayIST(), reminder: '' , customReminder: '' });
+  const [form, setForm] = useState({ title: '', description: '', priority: 'Medium', status: 'Pending', category: '', isRecurring: false, recurrencePattern: '', dueDate: todayIST(), reminder: '', customReminderDate: '', customReminderTime: '' });
 
   const categories = ['Development', 'Meetings', 'Code Review', 'Documentation', 'Testing', 'Design', 'Planning', 'Bug Fix', 'DevOps', 'Other'];
+
+  const statusOptions = [
+    { value: '', label: 'All Status' },
+    { value: 'Pending', label: 'Pending', dot: '#f59e0b' },
+    { value: 'InProgress', label: 'In Progress', dot: '#3b82f6' },
+    { value: 'Completed', label: 'Completed', dot: '#10b981' },
+  ];
+
+  const priorityOptions = [
+    { value: '', label: 'All Priority' },
+    { value: 'Low', label: 'Low', dot: '#10b981' },
+    { value: 'Medium', label: 'Medium', dot: '#f59e0b' },
+    { value: 'High', label: 'High', dot: '#ef4444' },
+  ];
+
+  const categoryOptions = [
+    { value: '', label: 'All Categories' },
+    ...categories.map(c => ({ value: c, label: c })),
+  ];
+
+  const hasActiveFilters = filter.status || filter.priority || filter.category;
+  const activeFilterCount = [filter.status, filter.priority, filter.category].filter(Boolean).length;
+
+  const clearFilters = () => {
+    setFilter({ status: '', priority: '', category: '' });
+    setPage(1);
+  };
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
   const pageSize = 10;
@@ -45,7 +74,7 @@ export default function Tasks() {
 
   const openCreate = () => {
     setEditingTask(null);
-    setForm({ title: '', description: '', priority: 'Medium', status: 'Pending', category: '', isRecurring: false, recurrencePattern: '', dueDate: todayIST(), reminder: '', customReminder: '' });
+    setForm({ title: '', description: '', priority: 'Medium', status: 'Pending', category: '', isRecurring: false, recurrencePattern: '', dueDate: todayIST(), reminder: '', customReminderDate: '', customReminderTime: '' });
     setModalOpen(true);
   };
 
@@ -61,14 +90,19 @@ export default function Tasks() {
       recurrencePattern: task.recurrencePattern || '',
       dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
       reminder: task.reminderAt ? 'custom' : '',
-      customReminder: task.reminderAt ? task.reminderAt.slice(0, 16) : '',
+      customReminderDate: task.reminderAt ? task.reminderAt.slice(0, 10) : '',
+      customReminderTime: task.reminderAt ? task.reminderAt.slice(11, 16) : '',
     });
     setModalOpen(true);
   };
 
   const computeReminderAt = () => {
     if (!form.reminder) return null;
-    if (form.reminder === 'custom') return form.customReminder || null;
+    if (form.reminder === 'custom') {
+      if (!form.customReminderDate) return null;
+      const time = form.customReminderTime || '09:00';
+      return `${form.customReminderDate}T${time}`;
+    }
     if (!form.dueDate) return null;
     const due = new Date(form.dueDate + 'T09:00:00');
     const offsets = { '1h': 1/24, '1d': 1, '3d': 3 };
@@ -85,7 +119,8 @@ export default function Tasks() {
       const reminderAt = computeReminderAt();
       const payload = { ...form, dueDate: form.dueDate || null, reminderAt };
       delete payload.reminder;
-      delete payload.customReminder;
+      delete payload.customReminderDate;
+      delete payload.customReminderTime;
       if (editingTask) {
         await taskApi.update(editingTask.id, payload);
         toast.success('Task updated');
@@ -157,34 +192,27 @@ export default function Tasks() {
         <CustomSelect
           value={filter.status}
           onChange={(val) => { setFilter({ ...filter, status: val }); setPage(1); }}
-          options={[
-            { value: '', label: 'All Status' },
-            { value: 'Pending', label: 'Pending' },
-            { value: 'InProgress', label: 'In Progress' },
-            { value: 'Completed', label: 'Completed' },
-          ]}
+          options={statusOptions}
           placeholder="All Status"
         />
         <CustomSelect
           value={filter.priority}
           onChange={(val) => { setFilter({ ...filter, priority: val }); setPage(1); }}
-          options={[
-            { value: '', label: 'All Priority' },
-            { value: 'Low', label: 'Low' },
-            { value: 'Medium', label: 'Medium' },
-            { value: 'High', label: 'High' },
-          ]}
+          options={priorityOptions}
           placeholder="All Priority"
         />
         <CustomSelect
           value={filter.category}
           onChange={(val) => { setFilter({ ...filter, category: val }); setPage(1); }}
-          options={[
-            { value: '', label: 'All Categories' },
-            ...categories.map(c => ({ value: c, label: c })),
-          ]}
+          options={categoryOptions}
           placeholder="All Categories"
         />
+        {hasActiveFilters && (
+          <button className="btn-clear-filters" onClick={clearFilters} title="Clear all filters">
+            <MdClose />
+            <span>Clear{activeFilterCount > 1 ? ` (${activeFilterCount})` : ''}</span>
+          </button>
+        )}
       </div>
 
       {loading ? (
@@ -255,6 +283,10 @@ export default function Tasks() {
           </div>
 
           <div className="form-section">
+            <div className="form-section-header">
+              <MdFlag className="form-section-icon" />
+              <span>Priority & Category</span>
+            </div>
             <div className="form-row form-row-3">
               <div className="form-group">
                 <label>Priority</label>
@@ -262,9 +294,9 @@ export default function Tasks() {
                   value={form.priority}
                   onChange={(val) => setForm({ ...form, priority: val })}
                   options={[
-                    { value: 'Low', label: 'Low' },
-                    { value: 'Medium', label: 'Medium' },
-                    { value: 'High', label: 'High' },
+                    { value: 'Low', label: 'Low', dot: '#10b981' },
+                    { value: 'Medium', label: 'Medium', dot: '#f59e0b' },
+                    { value: 'High', label: 'High', dot: '#ef4444' },
                   ]}
                 />
               </div>
@@ -275,7 +307,7 @@ export default function Tasks() {
                   onChange={(val) => setForm({ ...form, category: val })}
                   options={[
                     { value: '', label: 'None' },
-                    ...categories.map(c => ({ value: c, label: c })),
+                    ...categories.map(c => ({ value: c, label: c, icon: <MdCategory style={{ color: 'var(--cosmic-primary)', fontSize: '0.85rem' }} /> })),
                   ]}
                   placeholder="Select category"
                 />
@@ -287,9 +319,9 @@ export default function Tasks() {
                     value={form.status}
                     onChange={(val) => setForm({ ...form, status: val })}
                     options={[
-                      { value: 'Pending', label: 'Pending' },
-                      { value: 'InProgress', label: 'In Progress' },
-                      { value: 'Completed', label: 'Completed' },
+                      { value: 'Pending', label: 'Pending', dot: '#f59e0b' },
+                      { value: 'InProgress', label: 'In Progress', dot: '#3b82f6' },
+                      { value: 'Completed', label: 'Completed', dot: '#10b981' },
                     ]}
                   />
                 </div>
@@ -298,10 +330,14 @@ export default function Tasks() {
           </div>
 
           <div className="form-section">
+            <div className="form-section-header">
+              <MdCalendarToday className="form-section-icon" />
+              <span>Schedule</span>
+            </div>
             <div className="form-row">
               <div className="form-group">
                 <label>Due Date</label>
-                <input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} />
+                <CustomDatePicker value={form.dueDate} onChange={(val) => setForm({ ...form, dueDate: val })} placeholder="Pick a date" />
               </div>
               <div className="form-group">
                 <label>Remind Me</label>
@@ -311,20 +347,26 @@ export default function Tasks() {
                   options={[
                     { value: '', label: 'No Reminder' },
                     ...(form.dueDate ? [
-                      { value: '1h', label: '1 hour before due' },
-                      { value: '1d', label: '1 day before due' },
-                      { value: '3d', label: '3 days before due' },
+                      { value: '1h', label: '1 hour before due', icon: <MdAccessTime style={{ color: '#f59e0b', fontSize: '0.85rem' }} /> },
+                      { value: '1d', label: '1 day before due', icon: <MdSchedule style={{ color: '#3b82f6', fontSize: '0.85rem' }} /> },
+                      { value: '3d', label: '3 days before due', icon: <MdSchedule style={{ color: '#10b981', fontSize: '0.85rem' }} /> },
                     ] : []),
-                    { value: 'custom', label: 'Custom date/time' },
+                    { value: 'custom', label: 'Custom date/time', icon: <MdNotifications style={{ color: '#8b5cf6', fontSize: '0.85rem' }} /> },
                   ]}
                   placeholder="No Reminder"
                 />
               </div>
             </div>
             {form.reminder === 'custom' && (
-              <div className="form-group">
-                <label>Reminder Date/Time</label>
-                <input type="datetime-local" value={form.customReminder} onChange={(e) => setForm({ ...form, customReminder: e.target.value })} />
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Reminder Date</label>
+                  <CustomDatePicker value={form.customReminderDate} onChange={(val) => setForm({ ...form, customReminderDate: val })} placeholder="Pick date" />
+                </div>
+                <div className="form-group">
+                  <label>Reminder Time</label>
+                  <CustomTimePicker value={form.customReminderTime} onChange={(val) => setForm({ ...form, customReminderTime: val })} placeholder="Pick time" />
+                </div>
               </div>
             )}
           </div>
@@ -346,9 +388,9 @@ export default function Tasks() {
                     value={form.recurrencePattern}
                     onChange={(val) => setForm({ ...form, recurrencePattern: val })}
                     options={[
-                      { value: 'Daily', label: 'Daily' },
-                      { value: 'Weekly', label: 'Weekly' },
-                      { value: 'Monthly', label: 'Monthly' },
+                      { value: 'Daily', label: 'Daily', icon: <MdRepeat style={{ color: '#3b82f6', fontSize: '0.85rem' }} /> },
+                      { value: 'Weekly', label: 'Weekly', icon: <MdRepeat style={{ color: '#8b5cf6', fontSize: '0.85rem' }} /> },
+                      { value: 'Monthly', label: 'Monthly', icon: <MdRepeat style={{ color: '#10b981', fontSize: '0.85rem' }} /> },
                     ]}
                   />
                 </div>

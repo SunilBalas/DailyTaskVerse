@@ -98,6 +98,28 @@
   gap: 6px;
 }
 
+.log-form .form-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--cosmic-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.log-form .form-section-icon {
+  font-size: 1rem;
+}
+
+.log-form .form-section {
+  padding: 16px 0 0;
+  border-top: 1px solid var(--surface-border);
+  margin-top: 4px;
+}
+
 .log-form .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -115,9 +137,9 @@
 .log-form label {
   display: block;
   margin-bottom: 6px;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }

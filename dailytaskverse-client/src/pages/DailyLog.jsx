@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { MdAdd, MdEdit, MdDelete, MdAccessTime, MdFileDownload } from 'react-icons/md';
+import { MdAdd, MdEdit, MdDelete, MdAccessTime, MdFileDownload, MdCalendarToday, MdNotes } from 'react-icons/md';
 import { dailyLogApi, exportApi } from '../services/api';
 import { todayIST, nowTimeIST, plusOneHourIST } from '../utils/dateUtils';
 import Modal from '../components/common/Modal';
 import ConfirmDialog from '../components/common/ConfirmDialog';
+import CustomDatePicker from '../components/common/CustomDatePicker';
+import CustomTimePicker from '../components/common/CustomTimePicker';
 import toast from 'react-hot-toast';
 import './DailyLog.css';
 
@@ -155,23 +157,33 @@ export default function DailyLog() {
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingLog ? 'Edit Log Entry' : 'New Log Entry'}>
         <form onSubmit={handleSubmit} className="log-form">
+          <div className="form-section-header">
+            <MdCalendarToday className="form-section-icon" />
+            <span>Date & Time</span>
+          </div>
           <div className="form-row form-row-3">
             <div className="form-group">
               <label>Date</label>
-              <input type="date" value={form.logDate} onChange={(e) => setForm({ ...form, logDate: e.target.value })} required disabled={!!editingLog} />
+              <CustomDatePicker value={form.logDate} onChange={(val) => setForm({ ...form, logDate: val })} placeholder="Pick date" disabled={!!editingLog} />
             </div>
             <div className="form-group">
               <label>From</label>
-              <input type="time" value={form.fromTime} onChange={(e) => setForm({ ...form, fromTime: e.target.value })} />
+              <CustomTimePicker value={form.fromTime} onChange={(val) => setForm({ ...form, fromTime: val })} placeholder="Start time" />
             </div>
             <div className="form-group">
               <label>To</label>
-              <input type="time" value={form.toTime} onChange={(e) => setForm({ ...form, toTime: e.target.value })} />
+              <CustomTimePicker value={form.toTime} onChange={(val) => setForm({ ...form, toTime: val })} placeholder="End time" />
             </div>
           </div>
-          <div className="form-group">
-            <label>What did you work on today?</label>
-            <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={8} required placeholder="Describe your work, accomplishments, blockers..." />
+          <div className="form-section">
+            <div className="form-section-header">
+              <MdNotes className="form-section-icon" />
+              <span>Work Details</span>
+            </div>
+            <div className="form-group">
+              <label>What did you work on today?</label>
+              <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={8} required placeholder="Describe your work, accomplishments, blockers..." />
+            </div>
           </div>
           <button type="submit" className="btn-primary">
             {editingLog ? 'Update Entry' : 'Save Entry'}

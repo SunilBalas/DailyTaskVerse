@@ -66,23 +66,19 @@
   transform: rotate(180deg);
 }
 
-/* --- Dropdown Panel --- */
+/* --- Dropdown Panel (portaled to body, uses fixed positioning) --- */
 .custom-select-dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
   margin: 0;
   padding: 6px;
   list-style: none;
   background: var(--surface-card);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  z-index: 300;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
   max-height: 220px;
   overflow-y: auto;
   animation: selectDropdownIn 0.15s ease-out;
+  box-sizing: border-box;
 }
 
 @keyframes selectDropdownIn {
@@ -114,7 +110,7 @@
 .custom-select-option {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
   padding: 9px 12px;
   border-radius: var(--radius-sm);
   font-size: 0.86rem;
@@ -141,10 +137,49 @@
   background: var(--accent-bg-medium);
 }
 
+/* --- Dot & Icon in Options --- */
+.option-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.option-icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.custom-select-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .option-check {
   font-size: 1rem;
   color: var(--cosmic-primary);
   flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* Active filter highlight */
+.filters .custom-select-trigger.has-value {
+  border-color: var(--cosmic-primary);
+  background: var(--accent-bg-subtle);
+  color: var(--cosmic-primary);
+  font-weight: 600;
+}
+
+.filters .custom-select-trigger.has-value .custom-select-arrow {
+  color: var(--cosmic-primary);
 }
 
 /* --- Filter Bar Variant (smaller) --- */

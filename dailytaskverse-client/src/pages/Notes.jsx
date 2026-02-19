@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MdAdd, MdEdit, MdDelete, MdPushPin, MdFileDownload } from 'react-icons/md';
+import { MdAdd, MdEdit, MdDelete, MdPushPin, MdFileDownload, MdTitle, MdNotes } from 'react-icons/md';
 import { noteApi, exportApi } from '../services/api';
 import { formatDateTimeIST } from '../utils/dateUtils';
 import Modal from '../components/common/Modal';
@@ -144,9 +144,15 @@ export default function Notes() {
             <label>Title</label>
             <input type="text" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required maxLength={200} placeholder="Note title..." />
           </div>
-          <div className="form-group">
-            <label>Content</label>
-            <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={10} required placeholder="Write your note here..." />
+          <div className="form-section">
+            <div className="form-section-header">
+              <MdNotes className="form-section-icon" />
+              <span>Content</span>
+            </div>
+            <div className="form-group">
+              <label>Write your note</label>
+              <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={10} required placeholder="Write your note here..." />
+            </div>
           </div>
           <label className="checkbox-label">
             <input
