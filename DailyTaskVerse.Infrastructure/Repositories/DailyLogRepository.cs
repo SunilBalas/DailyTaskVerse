@@ -29,11 +29,42 @@ public class DailyLogRepository : IDailyLogRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<DailyLog>> GetFilteredAsync(Guid userId, DateTime? dateFrom, DateTime? dateTo, string? search, int page, int pageSize)
+    {
+        var query = BuildFilteredQuery(userId, dateFrom, dateTo, search);
+        return await query
+            .OrderByDescending(d => d.LogDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
     public async Task<int> GetCountByUserIdAsync(Guid userId)
     {
         return await _context.DailyLogs
             .Where(d => d.UserId == userId)
             .CountAsync();
+    }
+
+    public async Task<int> GetFilteredCountAsync(Guid userId, DateTime? dateFrom, DateTime? dateTo, string? search)
+    {
+        return await BuildFilteredQuery(userId, dateFrom, dateTo, search).CountAsync();
+    }
+
+    private IQueryable<DailyLog> BuildFilteredQuery(Guid userId, DateTime? dateFrom, DateTime? dateTo, string? search)
+    {
+        var query = _context.DailyLogs.Where(d => d.UserId == userId);
+
+        if (dateFrom.HasValue)
+            query = query.Where(d => d.LogDate >= dateFrom.Value.Date);
+
+        if (dateTo.HasValue)
+            query = query.Where(d => d.LogDate <= dateTo.Value.Date);
+
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(d => d.Content.Contains(search));
+
+        return query;
     }
 
     public async Task<DailyLog?> GetByDateAsync(Guid userId, DateTime date)

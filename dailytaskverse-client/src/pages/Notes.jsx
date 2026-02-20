@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MdAdd, MdEdit, MdDelete, MdPushPin, MdFileDownload, MdTitle, MdNotes } from 'react-icons/md';
+import { MdAdd, MdEdit, MdDelete, MdPushPin, MdFileDownload, MdTitle, MdNotes, MdSearch, MdClose, MdFilterList } from 'react-icons/md';
 import { noteApi, exportApi } from '../services/api';
 import { formatDateTimeIST } from '../utils/dateUtils';
 import Modal from '../components/common/Modal';
@@ -9,6 +9,7 @@ import './Notes.css';
 
 export default function Notes() {
   const [notes, setNotes] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
   const [form, setForm] = useState({ title: '', content: '', isPinned: false });
@@ -93,6 +94,13 @@ export default function Notes() {
     } catch { toast.error('Failed to export notes'); }
   };
 
+  const filteredNotes = searchQuery
+    ? notes.filter(n =>
+        n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        n.content.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : notes;
+
   if (loading) return <div className="loading">Loading notes...</div>;
 
   return (
@@ -109,9 +117,29 @@ export default function Notes() {
         </div>
       </div>
 
+      <div className="filters">
+        <MdFilterList className="filter-icon" />
+        <div className="filter-search">
+          <MdSearch className="filter-search-icon" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search notes..."
+            className="filter-search-input"
+          />
+        </div>
+        {searchQuery && (
+          <button className="btn-clear-filters" onClick={() => setSearchQuery('')} title="Clear search">
+            <MdClose />
+            <span>Clear</span>
+          </button>
+        )}
+      </div>
+
       <div className="notes-grid">
-        {notes.length > 0 ? (
-          notes.map((note) => (
+        {filteredNotes.length > 0 ? (
+          filteredNotes.map((note) => (
             <div key={note.id} className={`note-card ${note.isPinned ? 'pinned' : ''}`}>
               <div className="note-header">
                 <h3 className="note-title">{note.title}</h3>
