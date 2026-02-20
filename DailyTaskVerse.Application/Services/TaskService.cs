@@ -32,8 +32,8 @@ public class TaskService : ITaskService
         var status = Enum.TryParse<TaskItemStatus>(filter.Status, true, out var s) ? s : (TaskItemStatus?)null;
         var priority = Enum.TryParse<TaskPriority>(filter.Priority, true, out var p) ? p : (TaskPriority?)null;
 
-        var tasks = await _taskRepository.GetAllByUserIdAsync(userId, status, priority, filter.Category, filter.Page, filter.PageSize);
-        var totalCount = await _taskRepository.GetCountByUserIdAsync(userId, status, priority, filter.Category);
+        var tasks = await _taskRepository.GetAllByUserIdAsync(userId, status, priority, filter.Category, filter.Search, filter.Page, filter.PageSize);
+        var totalCount = await _taskRepository.GetCountByUserIdAsync(userId, status, priority, filter.Category, filter.Search);
 
         return new PagedResult<TaskDto>
         {

@@ -21,18 +21,9 @@ public class TaskRepository : ITaskRepository
     }
 
     public async Task<IEnumerable<TaskItem>> GetAllByUserIdAsync(
-        Guid userId, TaskItemStatus? status, TaskPriority? priority, string? category, int page, int pageSize)
+        Guid userId, TaskItemStatus? status, TaskPriority? priority, string? category, string? search, int page, int pageSize)
     {
-        var query = _context.Tasks.Where(t => t.UserId == userId);
-
-        if (status.HasValue)
-            query = query.Where(t => t.Status == status.Value);
-
-        if (priority.HasValue)
-            query = query.Where(t => t.Priority == priority.Value);
-
-        if (!string.IsNullOrEmpty(category))
-            query = query.Where(t => t.Category == category);
+        var query = BuildFilteredQuery(userId, status, priority, category, search);
 
         return await query
             .OrderByDescending(t => t.CreatedAt)
@@ -41,7 +32,12 @@ public class TaskRepository : ITaskRepository
             .ToListAsync();
     }
 
-    public async Task<int> GetCountByUserIdAsync(Guid userId, TaskItemStatus? status, TaskPriority? priority, string? category)
+    public async Task<int> GetCountByUserIdAsync(Guid userId, TaskItemStatus? status, TaskPriority? priority, string? category, string? search)
+    {
+        return await BuildFilteredQuery(userId, status, priority, category, search).CountAsync();
+    }
+
+    private IQueryable<TaskItem> BuildFilteredQuery(Guid userId, TaskItemStatus? status, TaskPriority? priority, string? category, string? search)
     {
         var query = _context.Tasks.Where(t => t.UserId == userId);
 
@@ -54,7 +50,10 @@ public class TaskRepository : ITaskRepository
         if (!string.IsNullOrEmpty(category))
             query = query.Where(t => t.Category == category);
 
-        return await query.CountAsync();
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(t => t.Title.Contains(search) || t.Description.Contains(search));
+
+        return query;
     }
 
     public async Task<TaskItem> CreateAsync(TaskItem task)

@@ -27,7 +27,7 @@ public class DashboardService : IDashboardService
         var pending = distribution.GetValueOrDefault(TaskItemStatus.Pending);
         var inProgress = distribution.GetValueOrDefault(TaskItemStatus.InProgress);
 
-        var recentTasks = await _taskRepository.GetAllByUserIdAsync(userId, null, null, null, 1, 5);
+        var recentTasks = await _taskRepository.GetAllByUserIdAsync(userId, null, null, null, null, 1, 5);
 
         return new DashboardDto
         {
@@ -231,20 +231,26 @@ public class DashboardService : IDashboardService
         var logs = await _dailyLogRepository.GetByDateRangeAsync(userId, weekStart, weekEnd);
         var taskStats = await _taskRepository.GetDailyStatsAsync(userId, weekStart, weekEnd);
 
-        var logDict = logs.ToDictionary(l => l.LogDate.Date);
+        var logsByDate = logs.GroupBy(l => l.LogDate.Date)
+            .ToDictionary(g => g.Key, g => g.ToList());
 
         var days = new List<TimesheetDayDto>();
         for (var date = weekStart; date < weekEnd; date = date.AddDays(1))
         {
-            logDict.TryGetValue(date.Date, out var log);
+            logsByDate.TryGetValue(date.Date, out var dateLogs);
             var stat = taskStats.FirstOrDefault(s => s.Date == date.Date);
+
+            var totalHours = dateLogs?.Where(l => l.HoursSpent.HasValue).Sum(l => l.HoursSpent!.Value);
+            var content = dateLogs != null
+                ? string.Join("\n", dateLogs.Select(l => l.Content).Where(c => !string.IsNullOrEmpty(c)))
+                : null;
 
             days.Add(new TimesheetDayDto
             {
                 Date = date,
                 DayName = date.ToString("ddd"),
-                HoursSpent = log?.HoursSpent,
-                LogContent = log?.Content,
+                HoursSpent = totalHours,
+                LogContent = content,
                 TasksCompleted = stat.Completed
             });
         }

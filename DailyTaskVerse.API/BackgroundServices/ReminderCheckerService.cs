@@ -45,7 +45,7 @@ public class ReminderCheckerService : BackgroundService
             {
                 if (stoppingToken.IsCancellationRequested) break;
 
-                var tasks = await taskRepository.GetAllByUserIdAsync(user.Id, null, null, null, 1, 10000);
+                var tasks = await taskRepository.GetAllByUserIdAsync(user.Id, null, null, null, null, 1, 10000);
                 var dueReminders = tasks.Where(t =>
                     t.Status != TaskItemStatus.Completed &&
                     t.ReminderAt.HasValue &&

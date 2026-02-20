@@ -20,7 +20,7 @@ public class ExportService : IExportService
 
     public async Task<byte[]> ExportTasksAsync(Guid userId, TaskItemStatus? status, TaskPriority? priority, string? category)
     {
-        var tasks = await _taskRepository.GetAllByUserIdAsync(userId, status, priority, category, 1, 10000);
+        var tasks = await _taskRepository.GetAllByUserIdAsync(userId, status, priority, category, null, 1, 10000);
 
         using var workbook = new XLWorkbook();
         var ws = workbook.Worksheets.Add("Tasks");
@@ -89,7 +89,8 @@ public class ExportService : IExportService
         var weekEnd = weekStart.AddDays(7);
         var logs = await _dailyLogRepository.GetByDateRangeAsync(userId, weekStart, weekEnd);
         var taskStats = await _taskRepository.GetDailyStatsAsync(userId, weekStart, weekEnd);
-        var logDict = logs.ToDictionary(l => l.LogDate.Date);
+        var logsByDate = logs.GroupBy(l => l.LogDate.Date)
+            .ToDictionary(g => g.Key, g => g.ToList());
 
         using var workbook = new XLWorkbook();
         var ws = workbook.Worksheets.Add("Timesheet");
@@ -109,16 +110,21 @@ public class ExportService : IExportService
 
         for (var date = weekStart; date < weekEnd; date = date.AddDays(1))
         {
-            logDict.TryGetValue(date.Date, out var log);
+            logsByDate.TryGetValue(date.Date, out var dateLogs);
             var stat = taskStats.FirstOrDefault(s => s.Date == date.Date);
+
+            var dayHours = dateLogs?.Where(l => l.HoursSpent.HasValue).Sum(l => l.HoursSpent!.Value);
+            var content = dateLogs != null
+                ? string.Join("\n", dateLogs.Select(l => l.Content).Where(c => !string.IsNullOrEmpty(c)))
+                : "";
 
             ws.Cell(row, 1).Value = date.ToString("dddd");
             ws.Cell(row, 2).Value = date.ToString("yyyy-MM-dd");
-            ws.Cell(row, 3).Value = log?.HoursSpent?.ToString("F1") ?? "0";
+            ws.Cell(row, 3).Value = dayHours?.ToString("F1") ?? "0";
             ws.Cell(row, 4).Value = stat.Completed;
-            ws.Cell(row, 5).Value = log?.Content ?? "";
+            ws.Cell(row, 5).Value = content;
 
-            if (log?.HoursSpent.HasValue == true) totalHours += log.HoursSpent.Value;
+            if (dayHours.HasValue) totalHours += dayHours.Value;
             totalTasks += stat.Completed;
             row++;
         }

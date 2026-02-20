@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { MdAdd, MdEdit, MdDelete, MdCheckCircle, MdFilterList, MdRepeat, MdFileDownload, MdNotificationsActive, MdClose, MdFlag, MdCategory, MdSchedule, MdNotifications, MdCalendarToday, MdAccessTime } from 'react-icons/md';
+import { useState, useEffect, useRef } from 'react';
+import { MdAdd, MdEdit, MdDelete, MdCheckCircle, MdFilterList, MdRepeat, MdFileDownload, MdNotificationsActive, MdClose, MdFlag, MdCategory, MdSchedule, MdNotifications, MdCalendarToday, MdAccessTime, MdSearch } from 'react-icons/md';
 import { taskApi, exportApi } from '../services/api';
 import { formatDateShortIST, todayIST } from '../utils/dateUtils';
 import Modal from '../components/common/Modal';
@@ -14,7 +14,9 @@ export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
-  const [filter, setFilter] = useState({ status: '', priority: '', category: '' });
+  const [filter, setFilter] = useState({ status: '', priority: '', category: '', search: '' });
+  const [searchInput, setSearchInput] = useState('');
+  const searchTimer = useRef(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [form, setForm] = useState({ title: '', description: '', priority: 'Medium', status: 'Pending', category: '', isRecurring: false, recurrencePattern: '', dueDate: todayIST(), reminder: '', customReminderDate: '', customReminderTime: '' });
@@ -40,12 +42,22 @@ export default function Tasks() {
     ...categories.map(c => ({ value: c, label: c })),
   ];
 
-  const hasActiveFilters = filter.status || filter.priority || filter.category;
-  const activeFilterCount = [filter.status, filter.priority, filter.category].filter(Boolean).length;
+  const hasActiveFilters = filter.status || filter.priority || filter.category || filter.search;
+  const activeFilterCount = [filter.status, filter.priority, filter.category, filter.search].filter(Boolean).length;
 
   const clearFilters = () => {
-    setFilter({ status: '', priority: '', category: '' });
+    setFilter({ status: '', priority: '', category: '', search: '' });
+    setSearchInput('');
     setPage(1);
+  };
+
+  const handleSearchInput = (val) => {
+    setSearchInput(val);
+    clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => {
+      setFilter(f => ({ ...f, search: val }));
+      setPage(1);
+    }, 400);
   };
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
@@ -62,6 +74,7 @@ export default function Tasks() {
       if (filter.status) params.status = filter.status;
       if (filter.priority) params.priority = filter.priority;
       if (filter.category) params.category = filter.category;
+      if (filter.search) params.search = filter.search;
       const { data } = await taskApi.getAll(params);
       setTasks(data.items);
       setTotalCount(data.totalCount);
@@ -207,6 +220,16 @@ export default function Tasks() {
           options={categoryOptions}
           placeholder="All Categories"
         />
+        <div className="filter-search">
+          <MdSearch className="filter-search-icon" />
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => handleSearchInput(e.target.value)}
+            placeholder="Search tasks..."
+            className="filter-search-input"
+          />
+        </div>
         {hasActiveFilters && (
           <button className="btn-clear-filters" onClick={clearFilters} title="Clear all filters">
             <MdClose />

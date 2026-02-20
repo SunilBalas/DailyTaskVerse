@@ -16,9 +16,9 @@ public class DailyLogController : ControllerBase
     }
 
     [HttpGet("{userId:guid}")]
-    public async Task<IActionResult> GetAll(Guid userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetAll(Guid userId, [FromQuery] DailyLogFilterRequest filter)
     {
-        var result = await _dailyLogService.GetAllAsync(userId, page, pageSize);
+        var result = await _dailyLogService.GetAllAsync(userId, filter);
         return Ok(result);
     }
 

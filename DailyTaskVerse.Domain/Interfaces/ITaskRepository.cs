@@ -6,8 +6,8 @@ namespace DailyTaskVerse.Domain.Interfaces;
 public interface ITaskRepository
 {
     Task<TaskItem?> GetByIdAsync(Guid id);
-    Task<IEnumerable<TaskItem>> GetAllByUserIdAsync(Guid userId, TaskItemStatus? status, TaskPriority? priority, string? category, int page, int pageSize);
-    Task<int> GetCountByUserIdAsync(Guid userId, TaskItemStatus? status, TaskPriority? priority, string? category);
+    Task<IEnumerable<TaskItem>> GetAllByUserIdAsync(Guid userId, TaskItemStatus? status, TaskPriority? priority, string? category, string? search, int page, int pageSize);
+    Task<int> GetCountByUserIdAsync(Guid userId, TaskItemStatus? status, TaskPriority? priority, string? category, string? search);
     Task<TaskItem> CreateAsync(TaskItem task);
     Task<TaskItem> UpdateAsync(TaskItem task);
     Task DeleteAsync(Guid id);

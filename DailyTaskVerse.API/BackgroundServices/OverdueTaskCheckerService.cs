@@ -46,7 +46,7 @@ public class OverdueTaskCheckerService : BackgroundService
                 if (stoppingToken.IsCancellationRequested) break;
 
                 // Get all non-completed tasks for this user
-                var tasks = await taskRepository.GetAllByUserIdAsync(user.Id, null, null, null, 1, 10000);
+                var tasks = await taskRepository.GetAllByUserIdAsync(user.Id, null, null, null, null, 1, 10000);
                 var overdueTasks = tasks.Where(t =>
                     t.Status != TaskItemStatus.Completed &&
                     t.DueDate.HasValue &&

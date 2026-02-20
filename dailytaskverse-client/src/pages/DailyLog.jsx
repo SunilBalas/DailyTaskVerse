@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { MdAdd, MdEdit, MdDelete, MdAccessTime, MdFileDownload, MdCalendarToday, MdNotes } from 'react-icons/md';
+import { useState, useEffect, useRef } from 'react';
+import { MdAdd, MdEdit, MdDelete, MdAccessTime, MdFileDownload, MdCalendarToday, MdNotes, MdFilterList, MdSearch, MdClose } from 'react-icons/md';
 import { dailyLogApi, exportApi } from '../services/api';
 import { todayIST, nowTimeIST, plusOneHourIST } from '../utils/dateUtils';
 import Modal from '../components/common/Modal';
@@ -13,21 +13,71 @@ export default function DailyLog() {
   const [logs, setLogs] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState({ dateFrom: '', dateTo: '', search: '' });
+  const [searchInput, setSearchInput] = useState('');
+  const searchTimer = useRef(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLog, setEditingLog] = useState(null);
   const [form, setForm] = useState({ logDate: todayIST(), fromTime: nowTimeIST(), toTime: plusOneHourIST(), content: '' });
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
+  const [todayHours, setTodayHours] = useState(0);
+  const [todayLogCount, setTodayLogCount] = useState(0);
   const pageSize = 10;
+
+  const hasActiveFilters = filter.dateFrom || filter.dateTo || filter.search;
+  const activeFilterCount = [filter.dateFrom, filter.dateTo, filter.search].filter(Boolean).length;
+
+  const clearFilters = () => {
+    setFilter({ dateFrom: '', dateTo: '', search: '' });
+    setSearchInput('');
+    setPage(1);
+  };
+
+  const handleSearchInput = (val) => {
+    setSearchInput(val);
+    clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => {
+      setFilter(f => ({ ...f, search: val }));
+      setPage(1);
+    }, 400);
+  };
 
   useEffect(() => {
     loadLogs();
-  }, [page]);
+  }, [page, filter]);
+
+  useEffect(() => {
+    loadTodayHours();
+  }, []);
+
+  const loadTodayHours = async () => {
+    try {
+      const today = todayIST();
+      const { data } = await dailyLogApi.getAll({ dateFrom: today, dateTo: today, pageSize: 100 });
+      const items = data.items || [];
+      setTodayLogCount(items.length);
+      const hours = items.reduce((sum, log) => {
+        if (log.fromTime && log.toTime) {
+          const [fh, fm] = log.fromTime.split(':').map(Number);
+          const [th, tm] = log.toTime.split(':').map(Number);
+          const diff = ((th * 60 + tm) - (fh * 60 + fm)) / 60;
+          return sum + Math.max(0, diff);
+        }
+        return sum;
+      }, 0);
+      setTodayHours(Math.round(hours * 10) / 10);
+    } catch { /* silently ignore */ }
+  };
 
   const loadLogs = async () => {
     try {
       setLoading(true);
-      const { data } = await dailyLogApi.getAll({ page, pageSize });
+      const params = { page, pageSize };
+      if (filter.dateFrom) params.dateFrom = filter.dateFrom;
+      if (filter.dateTo) params.dateTo = filter.dateTo;
+      if (filter.search) params.search = filter.search;
+      const { data } = await dailyLogApi.getAll(params);
       setLogs(data.items);
       setTotalCount(data.totalCount);
     } catch (err) {
@@ -68,6 +118,7 @@ export default function DailyLog() {
       }
       setModalOpen(false);
       loadLogs();
+      loadTodayHours();
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to save log');
     }
@@ -79,6 +130,7 @@ export default function DailyLog() {
       toast.success('Log deleted');
       setDeleteId(null);
       loadLogs();
+      loadTodayHours();
     } catch (err) {
       toast.error('Failed to delete log');
       setDeleteId(null);
@@ -109,6 +161,44 @@ export default function DailyLog() {
             <MdAdd /> New Entry
           </button>
         </div>
+      </div>
+
+      <div className="filters">
+        <MdFilterList className="filter-icon" />
+        <div className="filter-date-group">
+          <CustomDatePicker
+            value={filter.dateFrom}
+            onChange={(val) => { setFilter({ ...filter, dateFrom: val }); setPage(1); }}
+            placeholder="From date"
+          />
+          <span className="filter-date-sep">–</span>
+          <CustomDatePicker
+            value={filter.dateTo}
+            onChange={(val) => { setFilter({ ...filter, dateTo: val }); setPage(1); }}
+            placeholder="To date"
+          />
+        </div>
+        <div className="filter-search">
+          <MdSearch className="filter-search-icon" />
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => handleSearchInput(e.target.value)}
+            placeholder="Search logs..."
+            className="filter-search-input"
+          />
+        </div>
+        <div className="today-hours-badge" title={`${todayLogCount} log${todayLogCount !== 1 ? 's' : ''} today`}>
+          <MdAccessTime className="today-hours-icon" />
+          <span className="today-hours-label">Today</span>
+          <span className="today-hours-value">{todayHours}h</span>
+        </div>
+        {hasActiveFilters && (
+          <button className="btn-clear-filters" onClick={clearFilters} title="Clear all filters">
+            <MdClose />
+            <span>Clear{activeFilterCount > 1 ? ` (${activeFilterCount})` : ''}</span>
+          </button>
+        )}
       </div>
 
       {loading ? (

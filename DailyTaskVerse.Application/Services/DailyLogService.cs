@@ -38,6 +38,20 @@ public class DailyLogService : IDailyLogService
         };
     }
 
+    public async Task<PagedResult<DailyLogDto>> GetAllAsync(Guid userId, DailyLogFilterRequest filter)
+    {
+        var logs = await _dailyLogRepository.GetFilteredAsync(userId, filter.DateFrom, filter.DateTo, filter.Search, filter.Page, filter.PageSize);
+        var totalCount = await _dailyLogRepository.GetFilteredCountAsync(userId, filter.DateFrom, filter.DateTo, filter.Search);
+
+        return new PagedResult<DailyLogDto>
+        {
+            Items = logs.Select(MapToDto),
+            TotalCount = totalCount,
+            Page = filter.Page,
+            PageSize = filter.PageSize
+        };
+    }
+
     public async Task<DailyLogDto> CreateAsync(Guid userId, CreateDailyLogRequest request)
     {
         var log = new DailyLog
