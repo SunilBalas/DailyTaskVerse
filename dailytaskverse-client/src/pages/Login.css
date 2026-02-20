@@ -113,6 +113,67 @@
   box-shadow: 0 0 0 3px var(--accent-focus-ring);
 }
 
+/* Email suggestions dropdown */
+.email-field-wrapper {
+  position: relative;
+}
+
+.email-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  margin-top: 4px;
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.email-suggestion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  text-align: left;
+}
+
+.email-suggestion-item:hover {
+  background: var(--surface-hover);
+}
+
+.suggestion-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove-email-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.remove-email-btn:hover {
+  color: var(--text-primary);
+  background: var(--surface-muted);
+}
+
 .login-card .btn-primary {
   margin-top: 8px;
   padding: 14px;

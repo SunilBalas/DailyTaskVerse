@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import NotificationBell from '../common/NotificationBell';
+import ProfileMenu from '../common/ProfileMenu';
 import './AppLayout.css';
 
 export default function AppLayout() {
@@ -11,6 +12,7 @@ export default function AppLayout() {
         <header className="top-bar">
           <div className="top-bar-right">
             <NotificationBell />
+            <ProfileMenu />
           </div>
         </header>
         <main className="main-content">
