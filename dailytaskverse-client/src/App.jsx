@@ -12,6 +12,8 @@ import Standup from './pages/Standup';
 import Timesheet from './pages/Timesheet';
 import Notes from './pages/Notes';
 import AdminDashboard from './pages/AdminDashboard';
+import Settings from './pages/Settings';
+import WorkItems from './pages/WorkItems';
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -43,6 +45,8 @@ function AppRoutes() {
         <Route path="/standup" element={<Standup />} />
         <Route path="/timesheet" element={<Timesheet />} />
         <Route path="/notes" element={<Notes />} />
+        <Route path="/work-items" element={<WorkItems />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

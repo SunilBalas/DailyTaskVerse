@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { MdDashboard, MdTask, MdEditNote, MdBarChart, MdAdminPanelSettings, MdRecordVoiceOver, MdSchedule, MdStickyNote2 } from 'react-icons/md';
+import { MdDashboard, MdTask, MdEditNote, MdBarChart, MdAdminPanelSettings, MdRecordVoiceOver, MdSchedule, MdStickyNote2, MdBugReport, MdSettings } from 'react-icons/md';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 
@@ -11,6 +11,8 @@ const employeeNavItems = [
   { path: '/timesheet', icon: <MdSchedule />, label: 'Timesheet' },
   { path: '/notes', icon: <MdStickyNote2 />, label: 'Notes' },
   { path: '/reports', icon: <MdBarChart />, label: 'Reports' },
+  { path: '/work-items', icon: <MdBugReport />, label: 'Work Items' },
+  { path: '/settings', icon: <MdSettings />, label: 'Settings' },
 ];
 
 const adminNavItems = [
@@ -22,6 +24,8 @@ const adminNavItems = [
   { path: '/timesheet', icon: <MdSchedule />, label: 'Timesheet' },
   { path: '/notes', icon: <MdStickyNote2 />, label: 'Notes' },
   { path: '/reports', icon: <MdBarChart />, label: 'Reports' },
+  { path: '/work-items', icon: <MdBugReport />, label: 'Work Items' },
+  { path: '/settings', icon: <MdSettings />, label: 'Settings' },
 ];
 
 export default function Sidebar() {

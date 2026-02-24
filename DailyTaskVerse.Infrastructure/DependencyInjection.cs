@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<INoteRepository, NoteRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
+        services.AddScoped<IAzureDevOpsSettingsRepository, AzureDevOpsSettingsRepository>();
 
         return services;
     }

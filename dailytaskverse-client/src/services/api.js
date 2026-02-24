@@ -83,4 +83,14 @@ export const adminApi = {
   getUsers: () => api.get('/admin/users'),
 };
 
+export const azureDevOpsApi = {
+  getSettings: () => api.get(`/azuredevops/${getUserId()}`),
+  saveSettings: (data) => api.post(`/azuredevops/${getUserId()}`, data),
+  testConnection: (data) => api.post(`/azuredevops/${getUserId()}/test-connection`, data),
+  getProjects: (params) => api.get(`/azuredevops/${getUserId()}/projects`, { params }),
+  getWorkItems: (params) => api.get(`/azuredevops/${getUserId()}/work-items`, { params }),
+  getComments: (projectName, workItemId) => api.get(`/azuredevops/${getUserId()}/work-items/${encodeURIComponent(projectName)}/${workItemId}/comments`),
+  deleteSettings: () => api.delete(`/azuredevops/${getUserId()}`),
+};
+
 export default api;

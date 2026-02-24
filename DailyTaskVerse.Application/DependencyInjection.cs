@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<INoteService, NoteService>();
         services.AddScoped<IExportService, ExportService>();
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IAzureDevOpsService, AzureDevOpsService>();
 
         return services;
     }

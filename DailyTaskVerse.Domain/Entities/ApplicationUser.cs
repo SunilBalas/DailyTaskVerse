@@ -15,4 +15,5 @@ public class ApplicationUser : IdentityUser<Guid>
     public ICollection<DailyLog> DailyLogs { get; set; } = new List<DailyLog>();
     public ICollection<Note> Notes { get; set; } = new List<Note>();
     public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+    public AzureDevOpsSettings? AzureDevOpsSettings { get; set; }
 }
