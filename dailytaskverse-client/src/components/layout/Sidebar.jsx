@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
-import { MdDashboard, MdTask, MdEditNote, MdBarChart, MdLogout, MdAdminPanelSettings, MdRecordVoiceOver, MdSchedule, MdStickyNote2 } from 'react-icons/md';
+import { MdDashboard, MdTask, MdEditNote, MdBarChart, MdAdminPanelSettings, MdRecordVoiceOver, MdSchedule, MdStickyNote2, MdBugReport, MdSettings } from 'react-icons/md';
 import { useAuth } from '../../context/AuthContext';
-import ThemePicker from '../common/ThemePicker';
 import './Sidebar.css';
 
 const employeeNavItems = [
@@ -12,6 +11,8 @@ const employeeNavItems = [
   { path: '/timesheet', icon: <MdSchedule />, label: 'Timesheet' },
   { path: '/notes', icon: <MdStickyNote2 />, label: 'Notes' },
   { path: '/reports', icon: <MdBarChart />, label: 'Reports' },
+  { path: '/work-items', icon: <MdBugReport />, label: 'Work Items' },
+  { path: '/settings', icon: <MdSettings />, label: 'Settings' },
 ];
 
 const adminNavItems = [
@@ -23,10 +24,12 @@ const adminNavItems = [
   { path: '/timesheet', icon: <MdSchedule />, label: 'Timesheet' },
   { path: '/notes', icon: <MdStickyNote2 />, label: 'Notes' },
   { path: '/reports', icon: <MdBarChart />, label: 'Reports' },
+  { path: '/work-items', icon: <MdBugReport />, label: 'Work Items' },
+  { path: '/settings', icon: <MdSettings />, label: 'Settings' },
 ];
 
 export default function Sidebar() {
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
   const isAdmin = user?.role === 'Admin';
   const navItems = isAdmin ? adminNavItems : employeeNavItems;
 
@@ -48,19 +51,6 @@ export default function Sidebar() {
           </NavLink>
         ))}
       </nav>
-      <div className="sidebar-footer">
-        <div className="user-info">
-          <div className="user-avatar">{user?.name?.charAt(0).toUpperCase()}</div>
-          <div className="user-details">
-            <span className="user-name">{user?.name}</span>
-            <span className="user-role">{user?.role}</span>
-          </div>
-        </div>
-        <ThemePicker />
-        <button className="logout-btn" onClick={logout}>
-          <MdLogout /> Logout
-        </button>
-      </div>
     </aside>
   );
 }

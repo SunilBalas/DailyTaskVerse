@@ -25,6 +25,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
+// Data Protection & HttpClient for Azure DevOps
+builder.Services.AddDataProtection();
+builder.Services.AddHttpClient();
+
 // Background Services
 builder.Services.AddHostedService<OverdueTaskCheckerService>();
 builder.Services.AddHostedService<ReminderCheckerService>();

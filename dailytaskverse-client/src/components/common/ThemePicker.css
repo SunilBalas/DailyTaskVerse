@@ -2,8 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 0;
-  margin-bottom: 10px;
+  padding: 4px 0;
 }
 
 .theme-picker-label {
@@ -11,7 +10,7 @@
   text-transform: uppercase;
   letter-spacing: 0.8px;
   font-weight: 600;
-  color: var(--text-on-dark-muted);
+  color: var(--text-muted);
 }
 
 .theme-picker-options {
@@ -37,7 +36,7 @@
 }
 
 .theme-dot.active {
-  border-color: #fff;
+  border-color: var(--text-primary);
   box-shadow: 0 0 0 2px var(--dot-color), 0 0 10px var(--dot-color);
   transform: scale(1.15);
 }

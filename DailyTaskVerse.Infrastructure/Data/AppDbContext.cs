@@ -13,6 +13,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
     public DbSet<DailyLog> DailyLogs => Set<DailyLog>();
     public DbSet<Note> Notes => Set<Note>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<AzureDevOpsSettings> AzureDevOpsSettings => Set<AzureDevOpsSettings>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -100,6 +101,24 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
                   .WithMany()
                   .HasForeignKey(n => n.TaskId)
                   .OnDelete(DeleteBehavior.NoAction);
+        });
+
+        builder.Entity<AzureDevOpsSettings>(entity =>
+        {
+            entity.ToTable("AzureDevOpsSettings");
+            entity.HasKey(a => a.Id);
+            entity.Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+            entity.Property(a => a.OrganizationUrl).HasMaxLength(500).IsRequired();
+            entity.Property(a => a.EncryptedPat).IsRequired();
+            entity.Property(a => a.SelectedProjectIds).HasMaxLength(4000);
+            entity.Property(a => a.SelectedProjectNames).HasMaxLength(4000);
+
+            entity.HasIndex(a => a.UserId).IsUnique();
+
+            entity.HasOne(a => a.User)
+                  .WithOne(u => u.AzureDevOpsSettings)
+                  .HasForeignKey<AzureDevOpsSettings>(a => a.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
